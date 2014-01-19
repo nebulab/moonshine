@@ -13,16 +13,16 @@ describe Moonshine::Base do
       mock_class.default_subject.must_equal DefaultSubject
     end
 
-    describe 'when is initialized without a subject' do
-      it 'sets subject' do
+    describe 'when it is initialized without a subject' do
+      it 'sets subject as default subject' do
         mock_class.subject.must_be_instance_of DefaultSubject
       end
     end
 
-    describe 'when is initialized with a subject' do
+    describe 'when it is initialized with a subject' do
       let(:mock_class){ MockClass.new({}, Subject.new) }
 
-      it 'sets subject' do
+      it 'sets subject as requested' do
         mock_class.subject.must_be_instance_of Subject
       end
     end
