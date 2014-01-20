@@ -1,4 +1,4 @@
-# Moonshine
+# Moonshine [![Code Climate](https://codeclimate.com/github/nebulab/moonshine.png)](https://codeclimate.com/github/nebulab/moonshine)
 
 TODO: Write a gem description
 
