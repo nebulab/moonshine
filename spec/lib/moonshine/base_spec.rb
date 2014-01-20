@@ -27,6 +27,13 @@ describe Moonshine::Base do
       end
     end
   end
+
+  describe '.filter' do
+    it 'instantiates a Moonshine::Filter class' do
+      Moonshine::Filter.expects(:new).with(MockClass, :filter_name, :scope, transform: nil, default: nil)
+      MockClass.filter :filter_name, :scope
+    end
+  end
 end
 
 private

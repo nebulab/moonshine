@@ -15,6 +15,10 @@ module Moonshine
           klass
         end
       end
+
+      def filter name, scope, transform: nil, default: nil
+        Moonshine::Filter.new(self, name, scope, transform: transform, default: default)
+      end
     end
   end
 end
