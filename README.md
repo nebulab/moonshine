@@ -1,4 +1,4 @@
-# Moonshine [![Build Status](https://travis-ci.org/nebulab/moonshine.png?branch=master)](https://travis-ci.org/nebulab/moonshine) [![Coverage Status](https://coveralls.io/repos/nebulab/moonshine/badge.png?branch=master)](https://coveralls.io/r/nebulab/moonshine?branch=master) [![Code Climate](https://codeclimate.com/github/nebulab/moonshine.png)](https://codeclimate.com/github/nebulab/moonshine)
+# Moonshine [![Gem Version](https://badge.fury.io/rb/moonshine.png)](http://badge.fury.io/rb/moonshine) [![Build Status](https://travis-ci.org/nebulab/moonshine.png?branch=master)](https://travis-ci.org/nebulab/moonshine) [![Coverage Status](https://coveralls.io/repos/nebulab/moonshine/badge.png?branch=master)](https://coveralls.io/r/nebulab/moonshine?branch=master) [![Code Climate](https://codeclimate.com/github/nebulab/moonshine.png)](https://codeclimate.com/github/nebulab/moonshine)
 
 TODO: Write a gem description
 
