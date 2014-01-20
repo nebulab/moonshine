@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
   spec.email         = ["alessio.rocco.lt@gmail.com"]
   spec.summary       = %q{Conditional method chaining}
   spec.description   = %q{Conditional method chaining}
-  spec.homepage      = "//github.com/nebulab/moonshine"
+  spec.homepage      = "https://github.com/nebulab/moonshine"
   spec.license       = "MIT"
 
   spec.files         = `git ls-files`.split($/)
