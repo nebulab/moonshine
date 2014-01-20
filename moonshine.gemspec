@@ -8,9 +8,9 @@ Gem::Specification.new do |spec|
   spec.version       = Moonshine::VERSION
   spec.authors       = ["Alessio Rocco"]
   spec.email         = ["alessio.rocco.lt@gmail.com"]
-  spec.summary       = %q{TODO: Write a short summary. Required.}
-  spec.description   = %q{TODO: Write a longer description. Optional.}
-  spec.homepage      = ""
+  spec.summary       = %q{Conditional method chaining}
+  spec.description   = %q{Conditional method chaining}
+  spec.homepage      = "//github.com/nebulab/moonshine"
   spec.license       = "MIT"
 
   spec.files         = `git ls-files`.split($/)
