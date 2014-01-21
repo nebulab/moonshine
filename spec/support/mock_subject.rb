@@ -1,0 +1,2 @@
+class MockSubject
+end

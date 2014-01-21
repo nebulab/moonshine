@@ -17,7 +17,7 @@ module Moonshine
       end
 
       def filter name, scope, transform: nil, default: nil
-        Moonshine::Filter.new(self, name, scope, transform: transform, default: default)
+        Moonshine::Filter.define_on(self, name, scope, transform: transform, default: default)
       end
     end
   end
