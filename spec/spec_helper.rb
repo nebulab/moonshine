@@ -1,12 +1,12 @@
-require 'moonshine'
-require 'minitest/unit'
-require 'mocha/mini_test'
-require 'minitest/autorun'
-require 'minitest/pride'
 require 'coveralls'
 
 # Code coverage
 Coveralls.wear!
+
+require 'moonshine'
+require 'minitest/autorun'
+require 'mocha/mini_test'
+require 'minitest/pride'
 
 class MiniTest::Spec
   before :each do

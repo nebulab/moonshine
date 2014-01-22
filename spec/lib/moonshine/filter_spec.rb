@@ -1,4 +1,4 @@
-require 'test_helper'
+require 'spec_helper'
 
 describe Moonshine::Filter do
   let(:mock_instance) { MockChainBuilder.new({}) }
