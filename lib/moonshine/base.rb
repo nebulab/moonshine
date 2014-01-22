@@ -6,7 +6,7 @@ module Moonshine
 
     def initialize(filters, subject = nil)
       @filters = filters
-      @subject = subject || default_subject.new
+      @subject = subject || default_subject
     end
 
     class << self

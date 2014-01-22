@@ -12,7 +12,7 @@ class MiniTest::Spec
   before :each do
     ::MockSubject = Class.new
     ::MockDefaultSubject = Class.new do
-      def scope_method value
+      def self.scope_method value
       end
     end
     ::MockChainBuilder = Class.new(Moonshine::Base) do
