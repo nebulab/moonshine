@@ -38,4 +38,32 @@ describe Moonshine::Base do
       MockChainBuilder.filter :filter_name, :scope
     end
   end
+
+  describe '#all' do
+    let(:subject){ stub_everything('subject') }
+
+    before do
+      MockChainBuilder.filter :first_name, :by_first_name
+      MockChainBuilder.filter :last_name, :by_last_name
+      MockChainBuilder.filter :gender, :by_gender
+      MockChainBuilder.filter :age, :by_age
+    end
+
+    it 'calls the filters chain based on filters' do
+      chain_builder = MockChainBuilder.new({ first_name: 'Alessio', last_name: 'Rocco', gender: :male }, subject)
+      chain_builder.expects(:first_name).with('Alessio')
+      chain_builder.expects(:last_name).with('Rocco')
+      chain_builder.expects(:gender).with(:male)
+      chain_builder.expects(:age).never
+      chain_builder.all
+    end
+
+    it 'returns subject' do
+      chain_builder = MockChainBuilder.new({ first_name: 'Alessio', last_name: 'Rocco', gender: :male }, subject)
+      subject.stubs(:by_first_name).returns(subject)
+      subject.stubs(:by_last_name).returns(subject)
+      subject.stubs(:by_gender).returns(subject)
+      chain_builder.all.must_equal subject
+    end
+  end
 end

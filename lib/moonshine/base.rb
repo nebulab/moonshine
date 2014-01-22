@@ -9,6 +9,12 @@ module Moonshine
       @subject = subject || default_subject
     end
 
+    def all
+      filters.keys.inject(subject) do |obj, method|
+        send(method, filters[method])
+      end
+    end
+
     class << self
       def subject(klass)
         define_method :default_subject do
