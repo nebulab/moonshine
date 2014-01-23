@@ -1,18 +1,20 @@
 module Moonshine
   class Base
 
-    attr_accessor :filters
-    attr_accessor :subject
+    attr_accessor :filters, :subject
+    attr_reader :chain
 
     def initialize(filters, subject = nil)
       @filters = filters
       @subject = subject || default_subject
+      @chain = @subject.clone
     end
 
-    def all
-      filters.keys.inject(subject) do |obj, method|
-        send(method, filters[method])
+    def run
+      filters.each do |method, value|
+        send(method, value)
       end
+      chain
     end
 
     class << self

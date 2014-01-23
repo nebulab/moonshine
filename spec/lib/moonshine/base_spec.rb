@@ -39,7 +39,7 @@ describe Moonshine::Base do
     end
   end
 
-  describe '#all' do
+  describe '#run' do
     let(:subject){ stub_everything('subject') }
 
     before do
@@ -55,7 +55,7 @@ describe Moonshine::Base do
       chain_builder.expects(:last_name).with('Rocco')
       chain_builder.expects(:gender).with(:male)
       chain_builder.expects(:age).never
-      chain_builder.all
+      chain_builder.run
     end
 
     it 'returns subject' do
@@ -63,7 +63,7 @@ describe Moonshine::Base do
       subject.stubs(:by_first_name).returns(subject)
       subject.stubs(:by_last_name).returns(subject)
       subject.stubs(:by_gender).returns(subject)
-      chain_builder.all.must_equal subject
+      chain_builder.run.must_equal subject
     end
   end
 end
