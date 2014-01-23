@@ -18,7 +18,7 @@ module Moonshine
     def define
       filter = self
       @klass.send :define_method, name do |value|
-        subject.send(filter.scope, filter.set_value(self, value))
+        @chain = self.chain.send(filter.scope, filter.set_value(self, value))
       end
     end
 

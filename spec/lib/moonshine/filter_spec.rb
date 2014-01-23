@@ -14,8 +14,14 @@ describe Moonshine::Filter do
 
     describe 'defined method' do
       it 'delegates to method with same name on klass.subject' do
-        mock_instance.subject.expects(:scope_method).with(123)
+        mock_instance.chain.expects(:scope_method).with(123)
         mock_instance.filter_name 123
+      end
+
+      it 'sets chain attribute' do
+        mock_instance.stubs(:chain).returns(stub(send: 90))
+        mock_instance.filter_name 123
+        mock_instance.instance_variable_get(:@chain).must_equal 90
       end
 
       describe 'when transform is set' do
@@ -33,14 +39,14 @@ describe Moonshine::Filter do
 
         describe 'and value is blank' do
           it 'delegates to klass.subject with default value' do
-            mock_instance.subject.expects(:scope_method).with(567)
+            mock_instance.chain.expects(:scope_method).with(567)
             mock_instance.filter_name nil
           end
         end
 
         describe 'and value is not blank' do
           it 'delegates to klass.subject with given value' do
-            mock_instance.subject.expects(:scope_method).with(123)
+            mock_instance.chain.expects(:scope_method).with(123)
             mock_instance.filter_name 123
           end
         end
