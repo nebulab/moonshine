@@ -1,29 +1,29 @@
 module Moonshine
   class Filter
 
-    def self.define_on(klass, filter_name, scope, transform: nil, default: nil)
-      new(klass, filter_name, scope, transform: transform, default: default).define
-    end
+    attr_accessor :name, :scope, :transform, :default, :as_boolean
 
-    attr_accessor :klass, :name, :scope, :transform, :default
-
-    def initialize(klass, name, scope, transform: nil, default: nil)
-      @klass = klass
+    def initialize(name, scope, transform: nil, default: nil, as_boolean: nil)
       @name = name
       @scope = scope
       @transform = transform
       @default = default
+      @as_boolean = as_boolean
     end
 
-    def define
-      filter = self
-      @klass.send :define_method, name do |value|
-        @chain = self.chain.send(filter.scope, filter.set_value(self, value))
+    def execute(klass)
+      if klass.filters[name] || default
+        if as_boolean
+          if klass.filters[name]
+            return klass.subject.send(scope)
+          else
+            return klass.subject.send(scope) if default
+          end
+        else
+          return klass.subject.send(scope, set_transform(klass, set_default(klass.filters[name])))
+        end
       end
-    end
-
-    def set_value instance, value
-      set_trasform(instance, set_default(value))
+      klass.subject
     end
 
     private
@@ -32,8 +32,8 @@ module Moonshine
       value || default
     end
 
-    def set_trasform instance, value
-      instance.send(transform, value) if transform
+    def set_transform klass, value
+      return klass.send(transform, value) if transform
       value
     end
   end
