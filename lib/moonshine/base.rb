@@ -1,31 +1,32 @@
 module Moonshine
   class Base
 
-    attr_accessor :filters, :subject
-    attr_reader :chain
+    @@default_chain = []
+    attr_accessor :filters
+    attr_reader :chain, :subject
 
     def initialize(filters, subject = nil)
       @filters = filters
-      @subject = subject || default_subject
-      @chain = @subject.clone
+      @subject = subject || @@default_subject
+      @chain = @@default_chain
+    end
+
+    def add(filter)
+      @chain << filter
     end
 
     def run
-      filters.each do |method, value|
-        send(method, value)
-      end
-      chain
+      chain.each { |filter| @subject = filter.execute(self) }
+      @subject
     end
 
     class << self
-      def subject(klass)
-        define_method :default_subject do
-          klass
-        end
+      def default_subject(klass)
+        @@default_subject = klass
       end
 
-      def filter name, scope, transform: nil, default: nil
-        Moonshine::Filter.define_on(self, name, scope, transform: transform, default: default)
+      def filter name, scope, transform: nil, default: nil, as_boolean: nil
+        @@default_chain << Moonshine::Filter.new(name, scope, transform: transform, default: default, as_boolean: as_boolean)
       end
     end
   end

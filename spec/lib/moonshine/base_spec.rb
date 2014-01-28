@@ -1,69 +1,82 @@
 require 'spec_helper'
 
 describe Moonshine::Base do
+  before(:each) do
+    @chain_builder = Class.new(Moonshine::Base)
+    @default_subject = mock('default_subject')
+  end
+
+  after(:each) do
+    @chain_builder.class_variable_set(:@@default_subject, nil)
+    @chain_builder.class_variable_set(:@@default_chain, [])
+    @chain_builder, @default_subject = nil
+  end
 
   describe '.subject' do
-    let(:mock_instance){ MockChainBuilder.new({}) }
-
     before do
-      MockChainBuilder.subject MockDefaultSubject
+      @chain_builder.default_subject @default_subject
     end
 
-    it 'defines default_subject method on instance' do
-      mock_instance.must_respond_to(:default_subject)
-    end
-
-    it 'sets default_subject' do
-      mock_instance.default_subject.must_equal MockDefaultSubject
+    it 'sets default subject class attribute' do
+      @chain_builder.class_variable_get(:@@default_subject).must_equal @default_subject
     end
 
     describe 'when it is initialized without a subject' do
       it 'sets subject as default subject' do
-        mock_instance.subject.must_equal MockDefaultSubject
+        @chain_builder.new({}).subject.must_equal @default_subject
       end
     end
 
     describe 'when it is initialized with a subject' do
-      let(:mock_instance){ MockChainBuilder.new({}, MockSubject) }
+      let(:subject){ mock('subject') }
 
       it 'sets subject as requested' do
-        mock_instance.subject.must_equal MockSubject
+        @chain_builder.new({}, subject).subject.must_equal subject
       end
     end
   end
 
   describe '.filter' do
     it 'instantiates a Moonshine::Filter class' do
-      Moonshine::Filter.expects(:define_on).with(MockChainBuilder, :filter_name, :scope, transform: nil, default: nil)
-      MockChainBuilder.filter :filter_name, :scope
+      Moonshine::Filter.expects(:new).with(:filter_name, :scope, transform: nil, default: nil, as_boolean: nil)
+      @chain_builder.filter :filter_name, :scope
+    end
+
+    it 'adds filter to default_chain' do
+      filter =  mock('filter')
+      Moonshine::Filter.stubs(:new).returns(filter)
+      @chain_builder.filter :filter_name, :scope
+      @chain_builder.class_variable_get(:@@default_chain).must_equal [filter]
+    end
+  end
+
+  describe '#add' do
+    it 'adds filter to chain' do
+      filter = mock('filter')
+      chain_builder_instance = @chain_builder.new({})
+      chain_builder_instance.add(filter)
+      chain_builder_instance.chain.must_equal [filter]
     end
   end
 
   describe '#run' do
-    let(:subject){ stub_everything('subject') }
 
-    before do
-      MockChainBuilder.filter :first_name, :by_first_name
-      MockChainBuilder.filter :last_name, :by_last_name
-      MockChainBuilder.filter :gender, :by_gender
-      MockChainBuilder.filter :age, :by_age
-    end
-
-    it 'calls the filters chain based on filters' do
-      chain_builder = MockChainBuilder.new({ first_name: 'Alessio', last_name: 'Rocco', gender: :male }, subject)
-      chain_builder.expects(:first_name).with('Alessio')
-      chain_builder.expects(:last_name).with('Rocco')
-      chain_builder.expects(:gender).with(:male)
-      chain_builder.expects(:age).never
-      chain_builder.run
+    it 'run execute on each filter' do
+      filter1 = mock('filter1')
+      filter1.stubs(:name).returns(:filter1)
+      filter2 = mock('filter2')
+      filter2.stubs(:name).returns(:filter2)
+      filters = [filter1, filter2]
+      @chain_builder.class_variable_set(:@@default_chain, filters)
+      chain_builder_instance = @chain_builder.new({ filter1: 1, filter2: 2})
+      filter1.expects(:execute).with(chain_builder_instance)
+      filter2.expects(:execute).with(chain_builder_instance)
+      chain_builder_instance.run
     end
 
     it 'returns subject' do
-      chain_builder = MockChainBuilder.new({ first_name: 'Alessio', last_name: 'Rocco', gender: :male }, subject)
-      subject.stubs(:by_first_name).returns(subject)
-      subject.stubs(:by_last_name).returns(subject)
-      subject.stubs(:by_gender).returns(subject)
-      chain_builder.run.must_equal subject
+      chain_builder_instance = @chain_builder.new({})
+      chain_builder_instance.run.must_equal chain_builder_instance.subject
     end
   end
 end
