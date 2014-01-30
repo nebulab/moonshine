@@ -6,19 +6,13 @@ describe Moonshine::Base do
     @default_subject = mock('default_subject')
   end
 
-  after(:each) do
-    @chain_builder.class_variable_set(:@@default_subject, nil)
-    @chain_builder.class_variable_set(:@@default_chain, [])
-    @chain_builder, @default_subject = nil
-  end
-
   describe '.subject' do
     before do
-      @chain_builder.default_subject @default_subject
+      @chain_builder.default_subject = @default_subject
     end
 
     it 'sets default subject class attribute' do
-      @chain_builder.class_variable_get(:@@default_subject).must_equal @default_subject
+      @chain_builder.default_subject.must_equal @default_subject
     end
 
     describe 'when it is initialized without a subject' do
@@ -46,7 +40,7 @@ describe Moonshine::Base do
       filter =  mock('filter')
       Moonshine::Filter.stubs(:new).returns(filter)
       @chain_builder.filter :filter_name, :scope
-      @chain_builder.class_variable_get(:@@default_chain).must_equal [filter]
+      @chain_builder.default_chain.must_equal [filter]
     end
   end
 
@@ -67,7 +61,7 @@ describe Moonshine::Base do
       filter2 = mock('filter2')
       filter2.stubs(:name).returns(:filter2)
       filters = [filter1, filter2]
-      @chain_builder.class_variable_set(:@@default_chain, filters)
+      @chain_builder.default_chain = filters
       chain_builder_instance = @chain_builder.new({ filter1: 1, filter2: 2})
       filter1.expects(:execute).with(chain_builder_instance)
       filter2.expects(:execute).with(chain_builder_instance)

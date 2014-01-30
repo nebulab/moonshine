@@ -4,15 +4,9 @@ describe Moonshine::Filter do
   before(:each) do
     default_subject = mock('default_subject')
     @chain_builder = Class.new(Moonshine::Base) do
-      default_subject default_subject
+      subject default_subject
       filter :name, :scope
     end
-  end
-
-  after(:each) do
-    @chain_builder.class_variable_set(:@@default_subject, nil)
-    @chain_builder.class_variable_set(:@@default_chain, [])
-    @chain_builder, @default_subject = nil
   end
 
   describe '#execute' do
