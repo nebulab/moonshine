@@ -5,12 +5,12 @@ describe Moonshine::Filter do
     default_subject = mock('default_subject')
     @chain_builder = Class.new(Moonshine::Base) do
       subject default_subject
-      filter :name, :scope
+      param :name, call: :scope
     end
   end
 
   describe '#execute' do
-    let(:filter) { Moonshine::Filter.new(:filter, :filter) }
+    let(:filter) { Moonshine::Filter.new(:filter, method: :filter) }
     let(:chain_builder_instance) { @chain_builder.new({ filter: 1 }) }
 
     it 'sends scope to klass' do

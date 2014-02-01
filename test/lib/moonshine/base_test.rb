@@ -32,13 +32,13 @@ describe Moonshine::Base do
 
   describe '.param' do
     it 'instantiates a Moonshine::Filter class' do
-      Moonshine::Filter.expects(:new).with(:filter_name, scope: :scope, transform: nil, default: nil, as_boolean: nil)
-      @chain_builder.param :filter_name, call: :scope
+      Moonshine::Filter.expects(:new).with(:filter_name, method: :method, transform: nil, default: nil, as_boolean: nil)
+      @chain_builder.param :filter_name, call: :method
     end
 
     describe 'when :call is not given' do
       it 'instantiates a Moonshine::Filter class with call same as first param' do
-        Moonshine::Filter.expects(:new).with(:filter_name, scope: :filter_name, transform: nil, default: nil, as_boolean: nil)
+        Moonshine::Filter.expects(:new).with(:filter_name, method: :filter_name, transform: nil, default: nil, as_boolean: nil)
         @chain_builder.param :filter_name
       end
     end

@@ -1,11 +1,11 @@
 module Moonshine
   class Filter
 
-    attr_accessor :name, :scope, :transform, :default, :as_boolean
+    attr_accessor :name, :method, :transform, :default, :as_boolean
 
-    def initialize(name, scope: nil, transform: nil, default: nil, as_boolean: nil)
+    def initialize(name, method: nil, transform: nil, default: nil, as_boolean: nil)
       @name = name
-      @scope = scope
+      @method = method
       @transform = transform
       @default = default
       @as_boolean = as_boolean
@@ -15,12 +15,12 @@ module Moonshine
       if klass.filters[name] || default
         if as_boolean
           if klass.filters[name]
-            return klass.subject.send(scope)
+            return klass.subject.send(method)
           else
-            return klass.subject.send(scope) if default
+            return klass.subject.send(method) if default
           end
         else
-          return klass.subject.send(scope, set_transform(klass, set_default(klass.filters[name])))
+          return klass.subject.send(method, set_transform(klass, set_default(klass.filters[name])))
         end
       end
       klass.subject
