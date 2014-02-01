@@ -3,7 +3,7 @@ module Moonshine
 
     attr_accessor :name, :scope, :transform, :default, :as_boolean
 
-    def initialize(name, scope, transform: nil, default: nil, as_boolean: nil)
+    def initialize(name, scope: nil, transform: nil, default: nil, as_boolean: nil)
       @name = name
       @scope = scope
       @transform = transform

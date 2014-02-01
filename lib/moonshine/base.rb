@@ -27,9 +27,9 @@ module Moonshine
         self.default_subject = subject
       end
 
-      def filter name, scope, transform: nil, default: nil, as_boolean: nil
+      def filter name, call: nil, transform: nil, default: nil, as_boolean: nil
         self.default_chain ||= []
-        self.default_chain << Moonshine::Filter.new(name, scope, transform: transform, default: default, as_boolean: as_boolean)
+        self.default_chain << Moonshine::Filter.new(name, scope: call, transform: transform, default: default, as_boolean: as_boolean)
       end
     end
   end

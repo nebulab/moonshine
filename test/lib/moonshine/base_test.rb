@@ -32,14 +32,14 @@ describe Moonshine::Base do
 
   describe '.filter' do
     it 'instantiates a Moonshine::Filter class' do
-      Moonshine::Filter.expects(:new).with(:filter_name, :scope, transform: nil, default: nil, as_boolean: nil)
-      @chain_builder.filter :filter_name, :scope
+      Moonshine::Filter.expects(:new).with(:filter_name, scope: :scope, transform: nil, default: nil, as_boolean: nil)
+      @chain_builder.filter :filter_name, call: :scope
     end
 
     it 'adds filter to default_chain' do
       filter =  mock('filter')
       Moonshine::Filter.stubs(:new).returns(filter)
-      @chain_builder.filter :filter_name, :scope
+      @chain_builder.filter :filter_name, call: :scope
       @chain_builder.default_chain.must_equal [filter]
     end
   end
