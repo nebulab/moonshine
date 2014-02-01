@@ -36,6 +36,13 @@ describe Moonshine::Base do
       @chain_builder.when :filter_name, call: :scope
     end
 
+    describe 'when :call is not given' do
+      it 'instantiates a Moonshine::Filter class with call same as first param' do
+        Moonshine::Filter.expects(:new).with(:filter_name, scope: :filter_name, transform: nil, default: nil, as_boolean: nil)
+        @chain_builder.when :filter_name
+      end
+    end
+
     it 'adds filter to default_chain' do
       filter =  mock('filter')
       Moonshine::Filter.stubs(:new).returns(filter)
