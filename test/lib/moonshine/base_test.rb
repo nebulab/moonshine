@@ -1,4 +1,4 @@
-require 'spec_helper'
+require 'test_helper'
 
 describe Moonshine::Base do
   before(:each) do
