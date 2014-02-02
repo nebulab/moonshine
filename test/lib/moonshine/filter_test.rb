@@ -22,7 +22,7 @@ describe Moonshine::Filter do
     end
 
     it 'return subject when default and value are nil' do
-      filter.default = nil
+      filter.options[:default] = nil
       chain_builder_instance.filters = {}
       filter.execute(chain_builder_instance).must_equal chain_builder_instance.subject
     end
@@ -32,7 +32,7 @@ describe Moonshine::Filter do
         block = Proc.new { |subject, value| subject.some_method(value) }
         filter = Moonshine::Filter.new(:filter, &block)
         chain_builder_instance = @chain_builder.new({ filter: 1 })
-        filter.method_name.expects(:call)
+        filter.method_name.expects(:call).with(chain_builder_instance.subject, 1)
         filter.execute(chain_builder_instance)
       end
     end
@@ -40,7 +40,7 @@ describe Moonshine::Filter do
     describe 'options' do
       describe 'transform' do
         it 'changes value with transform method from klass' do
-          filter.transform = :transform_method
+          filter.options[:transform] = :transform_method
           chain_builder_instance.subject.stubs(:filter)
           chain_builder_instance.expects(:transform_method).with(1)
           filter.execute(chain_builder_instance)
@@ -49,21 +49,21 @@ describe Moonshine::Filter do
 
       describe 'default' do
         it 'uses default value if filter is nil' do
-          filter.default = 2
+          filter.options[:default] = 2
           chain_builder_instance.filters = {}
           chain_builder_instance.subject.expects(:filter).with(2)
           filter.execute(chain_builder_instance)
         end
 
         it 'not use default value if filter is not nil' do
-          filter.default = 2
+          filter.options[:default] = 2
           chain_builder_instance.filters = { filter: 1 }
           chain_builder_instance.subject.expects(:filter).with(1)
           filter.execute(chain_builder_instance)
         end
 
         it 'not sends filter if default and value are nil' do
-          filter.default = nil
+          filter.options[:default] = nil
           chain_builder_instance.filters = {}
           chain_builder_instance.subject.expects(:filter).never
           filter.execute(chain_builder_instance)
@@ -72,14 +72,14 @@ describe Moonshine::Filter do
 
       describe 'as_boolean' do
         it 'sends method without value when true' do
-          filter.as_boolean = true
+          filter.options[:as_boolean] = true
           chain_builder_instance.filters = { filter: true }
           chain_builder_instance.subject.expects(:filter)
           filter.execute(chain_builder_instance)
         end
 
         it 'sends method without value when false' do
-          filter.as_boolean = true
+          filter.options[:as_boolean] = true
           chain_builder_instance.filters = { filter: false }
           chain_builder_instance.subject.expects(:filter).never
           filter.execute(chain_builder_instance)
