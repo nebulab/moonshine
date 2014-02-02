@@ -27,9 +27,9 @@ module Moonshine
         self.default_subject = subject
       end
 
-      def param name, call: nil, transform: nil, default: nil, as_boolean: nil
+      def param(name, call: nil, **options, &block)
         self.default_chain ||= []
-        self.default_chain << Moonshine::Filter.new(name, method_name: call || name, transform: transform, default: default, as_boolean: as_boolean)
+        self.default_chain << Moonshine::Filter.new(name, method_name: (call || name), **options, &block)
       end
     end
   end
