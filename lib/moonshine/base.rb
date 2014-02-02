@@ -29,7 +29,7 @@ module Moonshine
 
       def param name, call: nil, transform: nil, default: nil, as_boolean: nil
         self.default_chain ||= []
-        self.default_chain << Moonshine::Filter.new(name, method: call || name, transform: transform, default: default, as_boolean: as_boolean)
+        self.default_chain << Moonshine::Filter.new(name, method_name: call || name, transform: transform, default: default, as_boolean: as_boolean)
       end
     end
   end

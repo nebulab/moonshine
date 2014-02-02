@@ -32,14 +32,22 @@ describe Moonshine::Base do
 
   describe '.param' do
     it 'instantiates a Moonshine::Filter class' do
-      Moonshine::Filter.expects(:new).with(:filter_name, method: :method, transform: nil, default: nil, as_boolean: nil)
+      Moonshine::Filter.expects(:new).with(:filter_name, method_name: :method, transform: nil, default: nil, as_boolean: nil)
       @chain_builder.param :filter_name, call: :method
     end
 
     describe 'when :call is not given' do
       it 'instantiates a Moonshine::Filter class with call same as first param' do
-        Moonshine::Filter.expects(:new).with(:filter_name, method: :filter_name, transform: nil, default: nil, as_boolean: nil)
+        Moonshine::Filter.expects(:new).with(:filter_name, method_name: :filter_name, transform: nil, default: nil, as_boolean: nil)
         @chain_builder.param :filter_name
+      end
+
+      describe 'and a block is given' do
+        it 'instantiates a Moonshine::Filter call with block as call' do
+          block = Proc.new{ |subject| subject }
+          Moonshine::Filter.expects(:new).with(:filter_name, &block)
+          @chain_builder.param :filter_name, &block
+        end
       end
     end
 

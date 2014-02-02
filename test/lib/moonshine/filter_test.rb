@@ -6,11 +6,14 @@ describe Moonshine::Filter do
     @chain_builder = Class.new(Moonshine::Base) do
       subject default_subject
       param :name, call: :scope
+      param :block do |subject, value|
+        subject.some_method(value)
+      end
     end
   end
 
   describe '#execute' do
-    let(:filter) { Moonshine::Filter.new(:filter, method: :filter) }
+    let(:filter) { Moonshine::Filter.new(:filter, method_name: :filter) }
     let(:chain_builder_instance) { @chain_builder.new({ filter: 1 }) }
 
     it 'sends scope to klass' do
@@ -22,6 +25,16 @@ describe Moonshine::Filter do
       filter.default = nil
       chain_builder_instance.filters = {}
       filter.execute(chain_builder_instance).must_equal chain_builder_instance.subject
+    end
+
+    describe 'when block is given' do
+      it 'calls block' do
+        block = Proc.new { |subject, value| subject.some_method(value) }
+        filter = Moonshine::Filter.new(:filter, &block)
+        chain_builder_instance = @chain_builder.new({ filter: 1 })
+        filter.method_name.expects(:call)
+        filter.execute(chain_builder_instance)
+      end
     end
 
     describe 'options' do
