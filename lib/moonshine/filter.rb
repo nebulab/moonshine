@@ -11,7 +11,7 @@ module Moonshine
 
     def execute(klass)
       @klass = klass
-      return method_call if klass.filters[name] || options[:default]
+      return method_call if klass.params[name] || options[:default]
       klass.subject
     end
 
@@ -26,7 +26,7 @@ module Moonshine
     end
 
     def args
-      set_transform(set_default(klass.filters[name])) unless options[:as_boolean]
+      set_transform(set_default(klass.params[name])) unless options[:as_boolean]
     end
 
     def set_default value

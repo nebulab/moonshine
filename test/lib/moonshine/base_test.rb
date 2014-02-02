@@ -75,8 +75,8 @@ describe Moonshine::Base do
       filter1.stubs(:name).returns(:filter1)
       filter2 = mock('filter2')
       filter2.stubs(:name).returns(:filter2)
-      filters = [filter1, filter2]
-      @chain_builder.default_chain = filters
+      params = [filter1, filter2]
+      @chain_builder.default_chain = params
       chain_builder_instance = @chain_builder.new({ filter1: 1, filter2: 2})
       filter1.expects(:execute).with(chain_builder_instance)
       filter2.expects(:execute).with(chain_builder_instance)

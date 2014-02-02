@@ -23,7 +23,7 @@ describe Moonshine::Filter do
 
     it 'return subject when default and value are nil' do
       filter.options[:default] = nil
-      chain_builder_instance.filters = {}
+      chain_builder_instance.params = {}
       filter.execute(chain_builder_instance).must_equal chain_builder_instance.subject
     end
 
@@ -50,21 +50,21 @@ describe Moonshine::Filter do
       describe 'default' do
         it 'uses default value if filter is nil' do
           filter.options[:default] = 2
-          chain_builder_instance.filters = {}
+          chain_builder_instance.params = {}
           chain_builder_instance.subject.expects(:filter).with(2)
           filter.execute(chain_builder_instance)
         end
 
         it 'not use default value if filter is not nil' do
           filter.options[:default] = 2
-          chain_builder_instance.filters = { filter: 1 }
+          chain_builder_instance.params = { filter: 1 }
           chain_builder_instance.subject.expects(:filter).with(1)
           filter.execute(chain_builder_instance)
         end
 
         it 'not sends filter if default and value are nil' do
           filter.options[:default] = nil
-          chain_builder_instance.filters = {}
+          chain_builder_instance.params = {}
           chain_builder_instance.subject.expects(:filter).never
           filter.execute(chain_builder_instance)
         end
@@ -73,14 +73,14 @@ describe Moonshine::Filter do
       describe 'as_boolean' do
         it 'sends method without value when true' do
           filter.options[:as_boolean] = true
-          chain_builder_instance.filters = { filter: true }
+          chain_builder_instance.params = { filter: true }
           chain_builder_instance.subject.expects(:filter)
           filter.execute(chain_builder_instance)
         end
 
         it 'sends method without value when false' do
           filter.options[:as_boolean] = true
-          chain_builder_instance.filters = { filter: false }
+          chain_builder_instance.params = { filter: false }
           chain_builder_instance.subject.expects(:filter).never
           filter.execute(chain_builder_instance)
         end

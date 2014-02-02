@@ -1,21 +1,21 @@
 module Moonshine
   class Base
 
-    attr_accessor :filters
+    attr_accessor :params
     attr_reader :chain, :subject
 
-    def initialize(filters, subject = nil)
-      @filters = filters
+    def initialize(params, subject = nil)
+      @params = params
       @subject = subject || self.class.default_subject
       @chain = self.class.default_chain || []
     end
 
-    def add(filter)
-      @chain << filter
+    def add(param)
+      @chain << param
     end
 
     def run
-      chain.each { |filter| @subject = filter.execute(self) }
+      chain.each { |param| @subject = param.execute(self) }
       @subject
     end
 
