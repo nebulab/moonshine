@@ -19,9 +19,9 @@ module Moonshine
 
     def method_call
       if method_name.is_a? Proc
-        method_name.call(klass.subject, *args)
+        method_name.call(klass.subject, args)
       else
-        klass.subject.send(method_name, *args)
+        klass.subject.send(method_name, args)
       end
     end
 
