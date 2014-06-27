@@ -1,45 +1,44 @@
 module Moonshine
   class Filter
 
-    attr_accessor :name, :method_name, :options, :klass
+    attr_accessor :name, :params, :options
 
-    def initialize(name, method_name: nil, **options, &block)
+    def initialize(name, **options, &block)
       @name = name
-      @method_name = block || method_name
+      options[:call] ||= block || name
       @options = options
     end
 
-    def execute(klass)
-      @klass = klass
-      return method_call if klass.params[name] || options[:default]
-      klass.subject
-    end
-
-    private
-
-    def method_call
+    def execute(subject)
+      return subject unless to_execute?
       if options[:as_boolean]
-        klass.subject.send(method_name)
+        subject.send(options[:call])
       else
-        if method_name.is_a? Proc
-          method_name.call(klass.subject, args)
+        if options[:call].is_a? Proc
+          options[:call].call(subject, args)
         else
-          klass.subject.send(method_name, args)
+          subject.send(options[:call], args)
         end
       end
     end
 
+    def to_execute?
+      !!default
+    end
+
+    private
+
     def args
-      set_transform(set_default(klass.params[name]))
+      transform(default)
     end
 
-    def set_default value
-      value || options[:default]
+    def default
+      params[name] || options[:default]
     end
 
-    def set_transform value
-      return klass.send(options[:transform], value) if options[:transform]
-      value
+    def transform(params)
+      return params unless options[:transform]
+      options[:transform_class].send(options[:transform], params)
     end
   end
 end
