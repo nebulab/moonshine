@@ -1,91 +1,138 @@
 require 'test_helper'
 
 describe Moonshine::Filter do
-  before(:each) do
-    default_subject = mock('default_subject')
-    @chain_builder = Class.new(Moonshine::Base) do
-      subject default_subject
-      param :name, call: :scope
-      param :block do |subject, value|
-        subject.some_method(value)
+
+  let(:tale) { Tale.new }
+  let(:filter) { Moonshine::Filter.new(:character) }
+
+  describe '#to_execute?' do
+    describe 'when params have a key like filter name' do
+      it 'returns true' do
+        filter.params = { character: 'a developer' }
+        filter.to_execute?.must_equal true
+      end
+    end
+
+    describe 'when options have a default value' do
+      it 'returns true' do
+        filter.options[:default] = true
+        filter.params = { antagonist: 'a designer'}
+        filter.to_execute?.must_equal true
+      end
+    end
+
+    describe 'when params does not have a key like filter name and does
+              not have a default value' do
+      it 'returns false' do
+        filter.params = { antagonist: 'a designer'}
+        filter.to_execute?.must_equal false
       end
     end
   end
 
   describe '#execute' do
-    let(:filter) { Moonshine::Filter.new(:filter, method_name: :filter) }
-    let(:chain_builder_instance) { @chain_builder.new({ filter: 1 }) }
-
-    it 'sends scope to klass' do
-      chain_builder_instance.subject.expects(:filter).with(1)
-      filter.execute(chain_builder_instance)
-    end
-
-    it 'return subject when default and value are nil' do
-      filter.options[:default] = nil
-      chain_builder_instance.params = {}
-      filter.execute(chain_builder_instance).must_equal chain_builder_instance.subject
-    end
-
-    describe 'when block is given' do
-      it 'calls block' do
-        block = Proc.new { |subject, value| subject.some_method(value) }
-        filter = Moonshine::Filter.new(:filter, &block)
-        chain_builder_instance = @chain_builder.new({ filter: 1 })
-        filter.method_name.expects(:call).with(chain_builder_instance.subject, 1)
-        filter.execute(chain_builder_instance)
+    describe 'when to_execute? return false' do
+      it 'returns given subject' do
+        filter.params = { antagonist: 'a designer'}
+        filter.execute(tale).must_equal tale
       end
     end
 
-    describe 'options' do
-      describe 'transform' do
-        it 'changes value with transform method from klass' do
-          filter.options[:transform] = :transform_method
-          chain_builder_instance.subject.stubs(:filter)
-          chain_builder_instance.expects(:transform_method).with(1)
-          filter.execute(chain_builder_instance)
+    describe 'when to_execute? return true' do
+
+      before do
+        filter.params = { character: 'a developer' }
+      end
+
+      describe 'and call is a block' do
+        it 'calls given block' do
+          filter.options[:call] = -> (subject, params){}
+          filter.options[:call].expects(:call).with(tale, 'a developer')
+          filter.execute(tale)
         end
       end
 
-      describe 'default' do
-        it 'uses default value if filter is nil' do
-          filter.options[:default] = 2
-          chain_builder_instance.params = {}
-          chain_builder_instance.subject.expects(:filter).with(2)
-          filter.execute(chain_builder_instance)
-        end
-
-        it 'not use default value if filter is not nil' do
-          filter.options[:default] = 2
-          chain_builder_instance.params = { filter: 1 }
-          chain_builder_instance.subject.expects(:filter).with(1)
-          filter.execute(chain_builder_instance)
-        end
-
-        it 'not sends filter if default and value are nil' do
-          filter.options[:default] = nil
-          chain_builder_instance.params = {}
-          chain_builder_instance.subject.expects(:filter).never
-          filter.execute(chain_builder_instance)
-        end
+      it 'sends method to given subject' do
+        tale.expects(:character).with('a developer')
+        filter.execute(tale)
       end
 
-      describe 'as_boolean' do
-        it 'sends method without value when true' do
-          filter.options[:as_boolean] = true
-          chain_builder_instance.params = { filter: true }
-          chain_builder_instance.subject.expects(:filter)
-          filter.execute(chain_builder_instance)
+      it 'returns given subject' do
+        filter.execute(tale).must_equal tale
+      end
+
+      describe 'options' do
+        describe 'transform' do
+          before do
+            filter.options[:transform_class] = TaleTransform
+            filter.options[:transform] = :to_upper
+          end
+
+          it 'sends transform method on given transform class' do
+            TaleTransform.expects(:to_upper).with('a developer')
+            filter.execute(tale)
+          end
+
+          it 'sends method to given subject with transformed value' do
+            tale.expects(:character).with('A DEVELOPER')
+            filter.execute(tale)
+          end
         end
 
-        it 'sends method without value when false' do
-          filter.options[:as_boolean] = true
-          chain_builder_instance.params = { filter: false }
-          chain_builder_instance.subject.expects(:filter).never
-          filter.execute(chain_builder_instance)
+        describe 'default' do
+          before do
+            filter.options[:default] = 'a designer'
+          end
+
+          describe 'when params have key like filter name' do
+            it 'sends method to given subject with given value' do
+              tale.expects(:character).with('a developer')
+              filter.execute(tale)
+            end
+          end
+
+          describe 'when params does not have key like filter name' do
+            it 'sends method to given subject with default value' do
+              tale.expects(:character).with('a designer')
+              filter.params = {}
+              filter.execute(tale)
+            end
+          end
+        end
+
+        describe 'as_boolean' do
+          before do
+            filter.options[:as_boolean] = true
+          end
+
+          describe 'when params have key like filter name' do
+            describe 'and value is true' do
+              it 'sends method to given subject whitout params' do
+                tale.expects(:character).with()
+                filter.params = { character: true }
+                filter.execute(tale)
+              end
+            end
+
+            describe 'and value is false' do
+              it 'do not sends method to given subject' do
+                tale.expects(:character).with().never
+                filter.params = { character: false }
+                filter.execute(tale)
+              end
+            end
+          end
+
+          describe 'when params does not have key like filter name' do
+            it 'do not sends method to given subject' do
+              tale.expects(:character).with().never
+              filter.params = {}
+              filter.execute(tale)
+            end
+          end
         end
       end
     end
   end
-
 end
+
