@@ -4,9 +4,7 @@ describe Moonshine::Base do
 
   let(:tale) { Tale.new }
   let(:tale_generator){ 
-    empty_tale_generator = EmptyTaleGenerator.new({ beginning: true }) 
-    empty_tale_generator.subject = tale
-    empty_tale_generator
+    EmptyTaleGenerator.new({ beginning: true }, tale)
   }
 
   describe '#add_filter_to_chain' do
@@ -44,9 +42,7 @@ describe Moonshine::Base do
 
   describe '#run' do
     let(:tale_generator){ 
-      empty_tale_generator = EmptyTaleGenerator.new({ beginning: true, conclusion: true }) 
-      empty_tale_generator.subject = tale
-      empty_tale_generator
+      EmptyTaleGenerator.new({ beginning: true, conclusion: true }, tale)
     }
 
     before do

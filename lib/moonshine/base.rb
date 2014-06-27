@@ -3,10 +3,17 @@ module Moonshine
     attr_reader :chain
     attr_accessor :params, :subject
 
+    include DSL
+
     def initialize(params, subject = nil)
-      @subject = subject
+      @subject = subject || self.class.default_subject.call
       @params = params
       @chain = []
+      if self.class.default_chain
+        self.class.default_chain.each do |params|
+          add_filter_to_chain(params[:name], params[:options], &params[:block])
+        end
+      end
     end
 
     def add_filter_to_chain(name, **options, &block)
