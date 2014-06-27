@@ -1,36 +1,24 @@
 module Moonshine
   class Base
-
-    attr_accessor :params
-    attr_reader :chain, :subject
+    attr_reader :chain
+    attr_accessor :params, :subject
 
     def initialize(params, subject = nil)
+      @subject = subject
       @params = params
-      @subject = subject || self.class.default_subject
-      @chain = self.class.default_chain || []
+      @chain = []
     end
 
-    def add(param)
-      @chain << param
+    def add_filter_to_chain(name, **options, &block)
+      @chain << Moonshine::Filter.new(name, options, &block)
     end
 
     def run
-      chain.each { |param| @subject = param.execute(self) }
-      @subject
-    end
-
-    class << self
-
-      attr_accessor :default_subject, :default_chain
-
-      def subject(subject)
-        self.default_subject = subject
-      end
-
-      def param(name, call: nil, **options, &block)
-        self.default_chain ||= []
-        self.default_chain << Moonshine::Filter.new(name, method_name: (call || name), **options, &block)
+      chain.inject(subject) do |subject, filter|
+        filter.params = params
+        subject = filter.execute(subject)
       end
     end
   end
 end
+

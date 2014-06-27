@@ -1,6 +1,6 @@
 require "moonshine/version"
-require "moonshine/base"
 require "moonshine/filter"
+require "moonshine/base"
 
 module Moonshine
   # Your code goes here...
