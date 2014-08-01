@@ -8,8 +8,8 @@ Gem::Specification.new do |spec|
   spec.version       = Moonshine::VERSION
   spec.authors       = ["Alessio Rocco"]
   spec.email         = ["alessio.rocco.lt@gmail.com"]
-  spec.summary       = %q{Conditional method chaining}
-  spec.description   = %q{Conditional method chaining}
+  spec.summary       = %q{A configuration driven method chain builder.}
+  spec.description   = %q{Moonshine removes the complexity in building conditional method chains by providing a way to call a list of methods based on some input parameters.}
   spec.homepage      = "https://github.com/nebulab/moonshine"
   spec.license       = "MIT"
 
