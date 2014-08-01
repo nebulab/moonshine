@@ -1,4 +1,4 @@
-# Moonshine 
+# Moonshine
 [![GemVersion](https://badge.fury.io/rb/moonshine.png)](http://badge.fury.io/rb/moonshine)
 [![BuildStatus](https://travis-ci.org/nebulab/moonshine.png?branch=master)](https://travis-ci.org/nebulab/moonshine)
 [![CoverageStatus](https://coveralls.io/repos/nebulab/moonshine/badge.png?branch=master)](https://coveralls.io/r/nebulab/moonshine?branch=master)
@@ -61,7 +61,7 @@ the `category` and `with_tags` methods are called on the `Post` class with
 
 As usual you can install it using [Bundler](http://bundler.io) by adding it
 to your application's Gemfile:
-  
+
 ```ruby
   gem 'moonshine'
 ```
@@ -142,7 +142,7 @@ chaining, in this case we are mostly chaining scopes:
 
 ### Running the chain
 
-After defining the `PostQuery` class we can run method chains with it on the 
+After defining the `PostQuery` class we can run method chains with it on the
 specified `subject`. An example run is like this:
 
 ```ruby
@@ -297,18 +297,15 @@ Take a look at this quick example with a string:
   class StringQuery < Moonshine::Base
     subject -> { 'a dog' }
 
-    param :upper, call: :upcase, as_boolean: true
     param :capitalize, as_boolean: true
     param :append, call: :concat
     param :concat, transform: :reverse
 
-    param :exclaims, default: true, as_boolean: true do |subject, value|
-      subject.concat(value || '!')
-    end
-
     param :append_a_cat do |subject, value|
       "#{subject} #{value} with a cat"
     end
+
+    param :upper, call: :upcase, as_boolean: true
 
     def self.reverse(value)
       value.reverse
@@ -321,18 +318,20 @@ Take a look at this quick example with a string:
   => "A DOG"
 
   StringQuery.new({}).run
-  => "a dog!"
+  => "a dog"
 
   StringQuery.new({ capitalize: true }).run
   => "A dog"
 
-  StringQuery.new({ append: ' go aroud' }).run
-  => "a dog go aroud"
+  StringQuery.new({ append: ' go around' }).run
+  => "a dog go around"
 
   StringQuery.new({ concat: 'tac a dna ' }).run
   => "a dog and a cat"
-```
 
+  StringQuery.new({ append_a_cat: 'go around', upper: true }).run
+  => "A DOG GO AROUND WITH A CAT"
+```
 
 ## Contributing
 
