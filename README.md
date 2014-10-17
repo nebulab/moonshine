@@ -1,4 +1,5 @@
 # Moonshine
+[![Gitter](https://badges.gitter.im/Join Chat.svg)](https://gitter.im/nebulab/moonshine?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 [![GemVersion](https://badge.fury.io/rb/moonshine.png)](http://badge.fury.io/rb/moonshine)
 [![BuildStatus](https://travis-ci.org/nebulab/moonshine.png?branch=master)](https://travis-ci.org/nebulab/moonshine)
 [![CoverageStatus](https://coveralls.io/repos/nebulab/moonshine/badge.png?branch=master)](https://coveralls.io/r/nebulab/moonshine?branch=master)
